@@ -23,14 +23,29 @@ void init_document(Document *doc) {
     doc->capacity = INITIAL_CAPACITY;
 }
 
+void display_document(const Document *doc) {
+    if (doc->line_count == 0) {
+        printf("Document is empty.\n");
+        return;
+    }
+
+    printf("\n--- Document ---\n");
+
+    for (int i = 0; i < doc->line_count; i++) {
+        printf("%d: %s\n", i + 1, doc->lines[i]);
+    }
+
+    printf("----------------\n");
+}
+
 int main() {
     Document doc;
 
     init_document(&doc);
 
     printf("Line Editor initialized successfully.\n");
-    printf("Lines: %d\n", doc.line_count);
-    printf("Capacity: %d\n", doc.capacity);
+
+    display_document(&doc);
 
     free(doc.lines);
 
