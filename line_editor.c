@@ -38,6 +38,44 @@ void display_document(const Document *doc) {
     printf("----------------\n");
 }
 
+void insert_line(Document *doc, int line_number, const char *text) {
+    if (line_number < 1 || line_number > doc->line_count + 1) {
+        printf("Error: Invalid line number.\n");
+        return;
+    }
+
+    if (doc->line_count == doc->capacity) {
+        doc->capacity *= 2;
+
+        char **temp = realloc(doc->lines,
+                              doc->capacity * sizeof(char *));
+
+        if (temp == NULL) {
+            printf("Memory allocation failed.\n");
+            return;
+        }
+
+        doc->lines = temp;
+    }
+
+    for (int i = doc->line_count; i >= line_number; i--) {
+        doc->lines[i] = doc->lines[i - 1];
+    }
+
+    doc->lines[line_number - 1] = malloc(strlen(text) + 1);
+
+    if (doc->lines[line_number - 1] == NULL) {
+        printf("Memory allocation failed.\n");
+        return;
+    }
+
+    strcpy(doc->lines[line_number - 1], text);
+
+    doc->line_count++;
+
+    printf("Line inserted successfully.\n");
+}
+
 int main() {
     Document doc;
 
@@ -45,7 +83,16 @@ int main() {
 
     printf("Line Editor initialized successfully.\n");
 
+    insert_line(&doc, 1, "Hello world");
+    insert_line(&doc, 2, "This is my first document.");
+    insert_line(&doc, 2, "I am learning C.");
+    insert_line(&doc, 4, "This is the last line.");
+
     display_document(&doc);
+
+    for (int i = 0; i < doc.line_count; i++) {
+        free(doc.lines[i]);
+    }
 
     free(doc.lines);
 
