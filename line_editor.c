@@ -76,6 +76,28 @@ void insert_line(Document *doc, int line_number, const char *text) {
     printf("Line inserted successfully.\n");
 }
 
+void delete_line(Document *doc, int line_number) {
+    if (doc->line_count == 0) {
+        printf("Error: Document is empty.\n");
+        return;
+    }
+
+    if (line_number < 1 || line_number > doc->line_count) {
+        printf("Error: Invalid line number.\n");
+        return;
+    }
+
+    free(doc->lines[line_number - 1]);
+
+    for (int i = line_number - 1; i < doc->line_count - 1; i++) {
+        doc->lines[i] = doc->lines[i + 1];
+    }
+
+    doc->line_count--;
+
+    printf("Line deleted successfully.\n");
+}
+
 int main() {
     Document doc;
 
