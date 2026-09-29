@@ -23,6 +23,15 @@ void init_document(Document *doc) {
     doc->capacity = INITIAL_CAPACITY;
 }
 
+void show_help() {
+    printf("\nAvailable Commands:\n");
+    printf("  insert <line_number>  - Insert a new line\n");
+    printf("  delete <line_number>  - Delete a line\n");
+    printf("  display               - Display the document\n");
+    printf("  help                  - Show available commands\n");
+    printf("  quit                  - Exit the editor\n");
+}
+
 void display_document(const Document *doc) {
     if (doc->line_count == 0) {
         printf("Document is empty.\n");
@@ -45,10 +54,10 @@ void insert_line(Document *doc, int line_number, const char *text) {
     }
 
     if (doc->line_count == doc->capacity) {
-        doc->capacity *= 2;
+        int new_capacity = doc->capacity * 2;
 
         char **temp = realloc(doc->lines,
-                              doc->capacity * sizeof(char *));
+                          new_capacity * sizeof(char *));
 
         if (temp == NULL) {
             printf("Memory allocation failed.\n");
@@ -56,6 +65,7 @@ void insert_line(Document *doc, int line_number, const char *text) {
         }
 
         doc->lines = temp;
+        doc->capacity = new_capacity;
     }
 
     for (int i = doc->line_count; i >= line_number; i--) {
@@ -100,17 +110,54 @@ void delete_line(Document *doc, int line_number) {
 
 int main() {
     Document doc;
+    char command[100];
+    int line_number;
 
     init_document(&doc);
 
-    printf("Line Editor initialized successfully.\n");
+    printf("=== LINE EDITOR ===\n");
+    printf("Type 'help' for available commands.\n");
 
-    insert_line(&doc, 1, "Hello world");
-    insert_line(&doc, 2, "This is my first document.");
-    insert_line(&doc, 2, "I am learning C.");
-    insert_line(&doc, 4, "This is the last line.");
+    while (1) {
+        printf("\n> ");
 
-    display_document(&doc);
+        if (scanf("%99s", command) != 1) {
+            break;
+        }
+
+        if (strcmp(command, "display") == 0) {
+            display_document(&doc);
+        }
+        else if (strcmp(command, "help") == 0) {
+            show_help();
+        }
+        else if (strcmp(command, "quit") == 0) {
+            printf("Goodbye.\n");
+            break;
+        }
+        else if (strcmp(command, "insert") == 0) {
+            char text[MAX_LINE_LENGTH];
+
+            scanf("%d", &line_number);
+
+            getchar();
+
+            printf("Enter text: ");
+            fgets(text, MAX_LINE_LENGTH, stdin);
+
+            text[strcspn(text, "\n")] = '\0';
+
+            insert_line(&doc, line_number, text);
+        }
+        else if (strcmp(command, "delete") == 0) {
+            scanf("%d", &line_number);
+
+            delete_line(&doc, line_number);
+        }
+        else {
+            printf("Unknown command. Type 'help' for available commands.\n");
+        }
+    }
 
     for (int i = 0; i < doc.line_count; i++) {
         free(doc.lines[i]);
