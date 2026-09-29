@@ -28,6 +28,7 @@ void show_help() {
     printf("  insert <line_number>  - Insert a new line\n");
     printf("  delete <line_number>  - Delete a line\n");
     printf("  display               - Display the document\n");
+    printf("  modify <line_number>  - Modify an existing line\n");
     printf("  help                  - Show available commands\n");
     printf("  quit                  - Exit the editor\n");
 }
@@ -108,6 +109,32 @@ void delete_line(Document *doc, int line_number) {
     printf("Line deleted successfully.\n");
 }
 
+void modify_line(Document *doc, int line_number, const char *text) {
+    if (doc->line_count == 0) {
+        printf("Error: Document is empty.\n");
+        return;
+    }
+
+    if (line_number < 1 || line_number > doc->line_count) {
+        printf("Error: Invalid line number.\n");
+        return;
+    }
+
+    char *new_line = malloc(strlen(text) + 1);
+
+    if (new_line == NULL) {
+        printf("Memory allocation failed.\n");
+        return;
+    }
+
+    strcpy(new_line, text);
+
+    free(doc->lines[line_number - 1]);
+    doc->lines[line_number - 1] = new_line;
+
+    printf("Line modified successfully.\n");
+}
+
 int main() {
     Document doc;
     char command[100];
@@ -128,13 +155,16 @@ int main() {
         if (strcmp(command, "display") == 0) {
             display_document(&doc);
         }
+        
         else if (strcmp(command, "help") == 0) {
             show_help();
         }
+
         else if (strcmp(command, "quit") == 0) {
             printf("Goodbye.\n");
             break;
         }
+
         else if (strcmp(command, "insert") == 0) {
             char text[MAX_LINE_LENGTH];
 
@@ -149,11 +179,26 @@ int main() {
 
             insert_line(&doc, line_number, text);
         }
+
         else if (strcmp(command, "delete") == 0) {
             scanf("%d", &line_number);
-
             delete_line(&doc, line_number);
         }
+
+        else if (strcmp(command, "modify") == 0) {
+            char text[MAX_LINE_LENGTH];
+
+            scanf("%d", &line_number);
+            getchar();
+
+            printf("Enter new text: ");
+            fgets(text, MAX_LINE_LENGTH, stdin);
+
+            text[strcspn(text, "\n")] = '\0';
+
+            modify_line(&doc, line_number, text);
+        }
+
         else {
             printf("Unknown command. Type 'help' for available commands.\n");
         }
