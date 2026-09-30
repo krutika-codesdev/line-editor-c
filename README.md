@@ -2,6 +2,12 @@
 
 A minimalist, interactive command-line line editor implemented in standard C as a data-structures practice activity. The editor stores document text in a dynamically allocated array of strings, supporting 1-indexed line insertion, deletion, modification, and display.
 
+## Team Members
+
+- R25EQ036 - Krutika P Mohanty
+- R25EF093 - Keerthi
+- R25EF130 - Madhuraa
+
 ## Features
 
 - **Interactive CLI:** Command-driven loop accepting editing commands with prompt feedback.
@@ -11,7 +17,7 @@ A minimalist, interactive command-line line editor implemented in standard C as 
 - **Line Modification:** Replace the contents of an existing line, properly allocating memory for the new string and freeing the old one (`modify <line_number>`).
 - **Document Display:** View all lines formatted with 1-indexed line numbers, or a notification if the document is empty (`display`).
 - **Built-in Help:** Quick reference displaying all supported commands (`help`).
-- **Clean Memory Management:** All allocated lines and the main pointer array are freed upon exiting via `quit`.
+- **Clean Memory Management:** All allocated lines and the main pointer array are freed before the program terminates.
 - **Input & Bounds Validation:** Error handling for invalid line indices, empty-document operations, unknown commands, and memory allocation failures.
 
 ## Data Structure & Memory Model
